@@ -45,7 +45,7 @@ class Product(models.Model):
         max_length=140,
         null=True,
         blank=True,
-        verbose_name='Артикль',
+        verbose_name='Описание',
         help_text='Макс. 16 символов'
     )
     article = models.CharField(
@@ -80,3 +80,6 @@ class Product(models.Model):
 
     class Meta:
         db_table = 'app_products'
+        verbose_name = 'товар'
+        verbose_name_plural = 'товары'
+        ordering = ('price', 'title', 'article')
