@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import Category
-from .models import Product
+from .models import Product, Order
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -22,4 +22,11 @@ class ProductAdmin(admin.ModelAdmin):
     search_help_text = ('Введите имя товара, id, артикул, цену')
 
 
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    empty_value_display = 'H/Y'
+    list_display = ('title', 'user', 'product', 'date_created', 'is_paid')
+    list_filter = ('is_paid', 'date_created')
+    search_fields = ('title', 'id')
+    search_help_text = ('Введите заказ')
 # admin.site.register(Category, CategoryAdmin)

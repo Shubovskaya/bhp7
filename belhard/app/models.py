@@ -1,3 +1,6 @@
+from datetime import datetime
+
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -83,3 +86,38 @@ class Product(models.Model):
         verbose_name = 'товар'
         verbose_name_plural = 'товары'
         ordering = ('price', 'title', 'article')
+
+
+class Order(models.Model):
+    title = models.CharField(
+        max_length=45,
+        verbose_name='заказ',
+        help_text='Макс. 36 символов'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        null=True
+    )
+    date_created = models.DateTimeField(
+        default=datetime.now(),
+        blank=True
+    )
+    is_paid = models.BooleanField(
+        default=0,
+        verbose_name='статус оплаты',
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        db_table = 'app_orders'
+        verbose_name = 'заявка/заказ'
+        verbose_name_plural = 'заявки/заказы'
+        ordering = ('product', 'title', 'user')
