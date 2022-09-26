@@ -96,7 +96,7 @@ class Order(models.Model):
     )
     user = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True
     )
     product = models.ForeignKey(
