@@ -1,25 +1,61 @@
 from django.contrib import admin
 
-# Register your models here.
 from .models import Category
 from .models import Product, Order
+
+
+class ProductTabularInline(admin.TabularInline):
+    model = Product
+
+
+class AppAdminSite(admin.AdminSite):
+    site_header = 'SITE HEADER'
+    site_title = 'SITE_TITLE'
+    site_url = 'SITE_URL'
+    index_title = 'INDEX_TITLE'
+
+appadmin = AppAdminSite(name='appadmin')
+
+@admin.action(description='Опубликовать')
+def make_published(self, request, queryset):
+    queryset.update(is_published=True)
+
+
+@admin.action(description='Снять с публикации')
+def make_unpublished(self, request, queryset):
+    queryset.update(is_published=False)
+
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     empty_value_display = 'H/Y'
+    actions = (make_published, make_unpublished)
     list_display = ('name', 'parent', 'is_published')
     list_filter = ('is_published', 'parent')
     search_fields = ('name', 'id')
     search_help_text = 'Введите имя родительской категории или id категории'
+    inlines = (ProductTabularInline, )
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     empty_value_display = 'H/Y'
+    actions = (make_published, make_unpublished)
     list_display = ('title', 'article', 'category', 'price', 'is_published')
     list_filter = ('is_published', 'category')
     search_fields = ('title', 'id', 'article', 'price')
     search_help_text = ('Введите имя товара, id, артикул, цену')
+    fieldsets = (
+        ('Основные натройки', {
+            'fields': ('title', 'article', 'price', 'category'),
+            'description': 'описание'
+        }),
+        ('Дополнительные настройки', {
+            'fields': ('is_published', 'descr', 'count')
+        })
+    )
+    list_editable = ('category', )
+    prepopulated_fields = {'descr': ('title', 'article')}
 
 
 @admin.register(Order)
@@ -29,4 +65,8 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ('is_paid', 'date_created')
     search_fields = ('title', 'id')
     search_help_text = ('Введите заказ')
-# admin.site.register(Category, CategoryAdmin)
+
+
+appadmin.register(Category, CategoryAdmin)
+appadmin.register(Product, ProductAdmin)
+appadmin.register(Order, OrderAdmin)
