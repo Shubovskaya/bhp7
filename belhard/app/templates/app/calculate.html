@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form method="post">
+    {% csrf_token %}
+    {{ calculate_form.width }}<br>
+    {{ calculate_form.height }}<br>
+    <button>SEND</button><br>
+    {{ result|default_if_none:"" }}
+</form>
+</body>
+</html>

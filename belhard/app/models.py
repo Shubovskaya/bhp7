@@ -77,6 +77,12 @@ class Product(models.Model):
         on_delete=models.PROTECT,
         verbose_name='категория'
     )
+    image = models.ImageField(
+        upload_to='products',
+        verbose_name='картинка',
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return self.title
@@ -121,3 +127,19 @@ class Order(models.Model):
         verbose_name = 'заявка/заказ'
         verbose_name_plural = 'заявки/заказы'
         ordering = ('product', 'title', 'user')
+
+
+class Contact(models.Model):
+    name = models.CharField(max_length=64)
+    email = models.CharField(max_length=64)
+    message = models.CharField(max_length=1024)
+    date_created = models.DateTimeField(default=datetime.utcnow(), verbose_name='дата публикации')
+
+    def __str__(self):
+        return self.email
+
+    class Meta:
+        db_table = 'app_contacts'
+        ordering = ('date_created', )
+        verbose_name = 'обращение'
+        verbose_name_plural = 'обращения'
